@@ -1,0 +1,53 @@
+import numpy as np
+
+def initialize_weights_and_threshold(num_features):
+    # Initialize weights with small random values and threshold to 0
+    weights = np.random.rand(num_features+1)
+    threshold = 0
+    return weights, threshold
+
+def perceptron_train(inputs, targets, weights, threshold, learning_rate=0.1, max_iterations=1000):
+    num_iterations = 0
+    converged = False
+
+    while not converged and num_iterations < max_iterations:
+        num_iterations += 1
+        converged = True
+
+        for input_data, target in zip(inputs, targets):
+            # Add bias term to input_data
+            input_data_with_bias = np.insert(input_data, 0, 1)
+            print(input_data_with_bias)
+            
+            # Calculate the weighted sum
+            weighted_sum = np.dot(weights, input_data_with_bias)
+            print(weighted_sum)
+
+            # Apply the threshold function
+            output = 1 if weighted_sum > threshold else 0
+
+            # Update weights if necessary
+            if output != target:
+                converged = False
+                weights += learning_rate * (target - output) * input_data_with_bias
+
+    return weights, num_iterations
+
+# Example usage:
+# Define training data (inputs and corresponding targets)
+inputs = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+print(inputs) 
+targets = np.array([0, 0, 0, 1])
+print(targets)
+
+# Initialize weights and threshold
+num_features = len(inputs[0])
+print(num_features)
+weights, threshold = initialize_weights_and_threshold(num_features)
+
+# Train the perceptron
+trained_weights, num_iterations = perceptron_train(inputs, targets, weights, threshold)
+
+# Print the results
+print(f"Converged in {num_iterations} iterations")
+print("Trained Weights:", trained_weights)
